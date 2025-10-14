@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentors List</title>
+    <script>
+        async function fetchMentors() {
+            try {
+                const response = await fetch('/api/v1/mentor/all');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch mentors: ' + response.status);
+                }
+
+                const json = await response.json();
+
+                if (!json.data || !Array.isArray(json.data)) {
+                    throw new Error('Invalid data structure: "data" is not an array');
+                }
+
+                const mentorsList = document.getElementById('mentors-list');
+                mentorsList.innerHTML = '';
+
+                json.data.forEach(mentor => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Name: ${mentor.name}, Job Title: ${mentor.jobTitle}, Location: ${mentor.location}, Skills: ${mentor.skills.join(', ')}`;
+                    mentorsList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error(error);
+                alert('Error fetching mentors data: ' + error.message);
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Mentors List</h1>
+<button onclick="fetchMentors()">Fetch Mentors</button>
+<ul id="mentors-list"></ul>
+</body>
+</html>
