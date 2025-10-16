@@ -3,10 +3,10 @@ package com.tomtom.service.mentorapply.reponse;
 import org.springframework.lang.NonNull;
 
 public record Response<T>(
-        @NonNull T data,
-        int code,
-        String message,
-        String token
+    @NonNull T data,
+    int code,
+    String message,
+    String token
 ) {
     public Response(@NonNull T data, int code) {
         this(data, code, null, null);

@@ -23,10 +23,10 @@ public class MentorServiceImpl implements MentorService {
     @NonNull
     public Response<Mentor[]> getAll() {
         Mentor[] mentors = mentorRepository
-                .findAll()
-                .stream()
-                .map(Mapper::fromEntity)
-                .toArray(Mentor[]::new);
+            .findAll()
+            .stream()
+            .map(Mapper::fromEntity)
+            .toArray(Mentor[]::new);
         return new Response<>(mentors, ResponseCode.SUCCESS.code());
     }
 }
