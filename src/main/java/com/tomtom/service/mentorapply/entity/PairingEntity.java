@@ -1,6 +1,7 @@
 package com.tomtom.service.mentorapply.entity;
 
-import jakarta.persistence.CascadeType;
+import com.tomtom.service.mentorapply.dto.PairingState;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -9,14 +10,23 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import org.springframework.lang.NonNull;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "TBL_PAIRINGS")
+@Table(
+    name = "TBL_PAIRINGS",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "mentor_id"),
+        @UniqueConstraint(columnNames = "mentee_id")
+    }
+)
 public class PairingEntity {
 
     @Id
@@ -24,41 +34,37 @@ public class PairingEntity {
     @Column(name = "id", nullable = false)
     public long id;
 
-    @Column(name = "mentor_id", nullable = false)
+    @Column(name = "mentor_id", nullable = false, insertable = false, updatable = false)
     public long mentorId;
 
-    @Column(name = "mentee_id", nullable = false)
+    @Column(name = "mentee_id", nullable = false, insertable = false, updatable = false)
     public long menteeId;
 
     @Column(name = "apply_date")
-    public long applyDate;
+    public LocalDate applyDate;
 
     @Column(name = "start_date")
-    public long startDate;
+    public LocalDate startDate;
 
     @Column(name = "end_date")
-    public long endDate;
+    public LocalDate endDate;
 
     @ElementCollection
+    @CollectionTable(name = "PAIRING_SKILLS", joinColumns = @JoinColumn(name = "pairing_id"))
     @Column(name = "skill_to_enhance")
     public List<String> skillsToEnhance;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false)
-    public State state;
+    public PairingState state;
 
-    @OneToOne(mappedBy = "pairing", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "mentor_id", unique = true, nullable = false)
     public MentorEntity mentor;
 
-    @OneToOne(mappedBy = "pairing", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "mentee_id", unique = true, nullable = false)
     public MenteeEntity mentee;
-
-    public enum State {
-        NOT_STARTED,
-        STARTED,
-        FINISHED,
-        CANCELED
-    }
 
     public PairingEntity() {
     }
@@ -67,11 +73,11 @@ public class PairingEntity {
         long id,
         long mentorId,
         long menteeId,
-        long applyDate,
-        long startDate,
-        long endDate,
+        LocalDate applyDate,
+        LocalDate startDate,
+        LocalDate endDate,
         @NonNull List<String> skillsToEnhance,
-        State state,
+        PairingState state,
         MentorEntity mentor,
         MenteeEntity mentee) {
         this.id = id;

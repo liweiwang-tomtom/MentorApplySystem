@@ -1,9 +1,9 @@
 package com.tomtom.service.mentorapply.entity;
 
 
-import com.tomtom.service.mentorapply.dto.Pairing;
 import com.tomtom.service.mentorapply.dto.PendingApplication;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -35,19 +35,19 @@ public class MentorEntity {
     @Column(name = "location")
     public String location;
 
-    @Column(name = "skills")
     @ElementCollection
+    @CollectionTable(name = "MENTOR_SKILLS", joinColumns = @JoinColumn(name = "mentor_id"))
+    @Column(name = "skill")
     public List<String> skills;
 
     @Column(name = "available", nullable = false)
     public boolean available;
 
-    @OneToOne(cascade = CascadeType.ALL, optional = true)
-    @JoinColumn(name = "pairing_id")
-    private PairingEntity pairing;
+    @OneToOne(mappedBy = "mentor")
+    public PairingEntity pairing;
 
-    @OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL)
-    public List<PendingApplication> pendingApplications;
+    @OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<PendingApplicationEntity> pendingApplications;
 
     public MentorEntity(
         long id,
@@ -56,8 +56,8 @@ public class MentorEntity {
         String location,
         List<String> skills,
         boolean available,
-        Pairing pairing,
-        List<PendingApplication> pendingApplications) {
+        PairingEntity pairing,
+        List<PendingApplicationEntity> pendingApplications) {
         this.id = id;
         this.name = name;
         this.jobTitle = jobTitle;

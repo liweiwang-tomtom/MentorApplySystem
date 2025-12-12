@@ -1,13 +1,15 @@
 package com.tomtom.service.mentorapply.dto;
 
+import java.util.List;
+
 public record Mentor(
     long id,
     String name,
     String jobTitle,
     String location,
-    String[] skills,
+    List<String> skills,
     boolean available,
     Pairing pairing,
-    PendingApplication[] pendingApplications
+    List<PendingApplication> pendingApplications
 ) {
 }

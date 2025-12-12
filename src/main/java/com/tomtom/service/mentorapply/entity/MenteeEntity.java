@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -33,11 +32,10 @@ public class MenteeEntity {
     @Column(name = "location")
     public String location;
 
-    @OneToOne(cascade = CascadeType.ALL, optional = true)
-    @JoinColumn(name = "pairing_id")
+    @OneToOne(mappedBy = "mentee")
     public PairingEntity pairing;
 
-    @OneToMany(mappedBy = "mentee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "mentee", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<PendingApplicationEntity> pendingApplications;
 
     public MenteeEntity() {

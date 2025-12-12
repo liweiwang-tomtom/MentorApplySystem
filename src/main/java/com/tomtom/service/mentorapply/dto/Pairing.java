@@ -1,19 +1,16 @@
 package com.tomtom.service.mentorapply.dto;
 
+import java.time.LocalDate;
+import java.util.List;
+
 public record Pairing(
     long id,
     long mentorId,
     long menteeId,
-    long applyDate,
-    long startDate,
-    long endDate,
-    String[] skillsToEnhance,
-    State state
+    LocalDate applyDate,
+    LocalDate startDate,
+    LocalDate endDate,
+    List<String> skillsToEnhance,
+    PairingState state
 ) {
-    public enum State {
-        NOT_STARTED,
-        STARTED,
-        FINISHED,
-        CANCELED
-    }
 }
