@@ -55,7 +55,11 @@ public class PendingApplicationEntity {
     @JoinColumn(name = "mentee_id", nullable = false)
     public MenteeEntity mentee;
 
-    public PendingApplicationEntity() {}
+    public PendingApplicationEntity() {
+        this.id = 0L;
+        this.mentorId = 0L;
+        this.menteeId = 0L;
+    }
 
     public PendingApplicationEntity(
         long id,

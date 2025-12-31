@@ -1,6 +1,6 @@
 package com.tomtom.service.mentorapply.repository;
 
-import com.tomtom.service.mentorapply.entity.MentorEntity;
+import com.tomtom.service.mentorapply.entity.MenteeEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,18 +12,18 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MentorRepository extends JpaRepository<MentorEntity, Long> {
-    @Query("SELECT m FROM MentorEntity m WHERE m.id = :id")
-    MentorEntity findById(@Param("id") long id);
+public interface MenteeRepository extends JpaRepository<MenteeEntity, Long> {
+    @Query("SELECT m FROM MenteeEntity m WHERE m.id = :id")
+    MenteeEntity findById(@Param("id") long id);
 
-    @Query("SELECT m FROM MentorEntity m WHERE m.name = :name")
-    List<MentorEntity> findByName(@Param("name") String name);
+    @Query("SELECT m FROM MenteeEntity m WHERE m.name = :name")
+    List<MenteeEntity> findByName(@Param("name") String name);
 
     @Query("SELECT m FROM MentorEntity m WHERE LOWER(m.location) LIKE LOWER(CONCAT('%', :location, '%'))")
-    List<MentorEntity> findByLocation(@NonNull @Param("location") String location);
+    List<MenteeEntity> findByLocation(@NonNull @Param("location") String location);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM MentorEntity m WHERE m.id = :id")
+    @Query("DELETE FROM MenteeEntity m WHERE m.id = :id")
     void deleteById(@Param("id") long id);
 }

@@ -67,6 +67,9 @@ public class PairingEntity {
     public MenteeEntity mentee;
 
     public PairingEntity() {
+        this.id = 0L;
+        this.mentorId = 0L;
+        this.menteeId = 0L;
     }
 
     public PairingEntity(

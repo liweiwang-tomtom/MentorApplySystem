@@ -1,10 +1,20 @@
 package com.tomtom.service.mentorapply.service.api;
 
 import com.tomtom.service.mentorapply.dto.Mentor;
-import com.tomtom.service.mentorapply.reponse.Response;
-import org.springframework.lang.NonNull;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface MentorService {
-    @NonNull
-    Response<Mentor[]> getAll();
+    ResponseEntity<List<Mentor>> getAll();
+
+    ResponseEntity<Mentor> getById(long id);
+
+    ResponseEntity<List<Mentor>> getByName(String name);
+
+    ResponseEntity<List<Mentor>> getByLocation(String location);
+
+    ResponseEntity<Void> deleteById(long id);
+
+    ResponseEntity<Mentor> addOrUpdate(Mentor mentor);
 }
