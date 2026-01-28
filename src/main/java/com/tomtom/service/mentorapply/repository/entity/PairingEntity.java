@@ -1,6 +1,6 @@
-package com.tomtom.service.mentorapply.entity;
+package com.tomtom.service.mentorapply.repository.entity;
 
-import com.tomtom.service.mentorapply.dto.PairingState;
+import com.tomtom.service.mentorapply.service.dto.PairingState;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -14,9 +14,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -70,6 +70,11 @@ public class PairingEntity {
         this.id = 0L;
         this.mentorId = 0L;
         this.menteeId = 0L;
+        this.applyDate = LocalDate.now();
+        this.startDate = LocalDate.now();
+        this.endDate = LocalDate.now();
+        this.skillsToEnhance = Collections.emptyList();
+        this.state = PairingState.NOT_STARTED;
     }
 
     public PairingEntity(
@@ -79,7 +84,7 @@ public class PairingEntity {
         LocalDate applyDate,
         LocalDate startDate,
         LocalDate endDate,
-        @NonNull List<String> skillsToEnhance,
+        List<String> skillsToEnhance,
         PairingState state,
         MentorEntity mentor,
         MenteeEntity mentee) {

@@ -1,6 +1,6 @@
 package com.tomtom.service.mentorapply.controller;
 
-import com.tomtom.service.mentorapply.dto.Mentor;
+import com.tomtom.service.mentorapply.service.dto.Mentor;
 import com.tomtom.service.mentorapply.service.api.MentorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

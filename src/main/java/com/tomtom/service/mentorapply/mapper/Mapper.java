@@ -1,13 +1,13 @@
 package com.tomtom.service.mentorapply.mapper;
 
-import com.tomtom.service.mentorapply.dto.Mentee;
-import com.tomtom.service.mentorapply.dto.Mentor;
-import com.tomtom.service.mentorapply.dto.Pairing;
-import com.tomtom.service.mentorapply.dto.PendingApplication;
-import com.tomtom.service.mentorapply.entity.MenteeEntity;
-import com.tomtom.service.mentorapply.entity.MentorEntity;
-import com.tomtom.service.mentorapply.entity.PairingEntity;
-import com.tomtom.service.mentorapply.entity.PendingApplicationEntity;
+import com.tomtom.service.mentorapply.repository.entity.MenteeEntity;
+import com.tomtom.service.mentorapply.repository.entity.MentorEntity;
+import com.tomtom.service.mentorapply.repository.entity.PairingEntity;
+import com.tomtom.service.mentorapply.repository.entity.PendingApplicationEntity;
+import com.tomtom.service.mentorapply.service.dto.Mentee;
+import com.tomtom.service.mentorapply.service.dto.Mentor;
+import com.tomtom.service.mentorapply.service.dto.Pairing;
+import com.tomtom.service.mentorapply.service.dto.PendingApplication;
 
 public class Mapper {
     public static PairingEntity toEntity(final Pairing pairing) {
@@ -63,6 +63,7 @@ public class Mapper {
     }
 
     public static MentorEntity toEntity(final Mentor mentor) {
+        var pairing = mentor.pairing();
         return new MentorEntity(
             mentor.id(),
             mentor.name(),
@@ -70,12 +71,13 @@ public class Mapper {
             mentor.location(),
             mentor.skills(),
             mentor.available(),
-            toEntity(mentor.pairing()),
+            pairing != null ? toEntity(pairing) : null,
             mentor.pendingApplications().stream().map(Mapper::toEntity).toList()
         );
     }
 
     public static Mentor fromEntity(final MentorEntity mentorEntity) {
+        var pairing = mentorEntity.pairing;
         return new Mentor(
             mentorEntity.id,
             mentorEntity.name,
@@ -83,29 +85,31 @@ public class Mapper {
             mentorEntity.location,
             mentorEntity.skills,
             mentorEntity.available,
-            fromEntity(mentorEntity.pairing),
+            pairing != null ? fromEntity(pairing) : null,
             mentorEntity.pendingApplications.stream().map(Mapper::fromEntity).toList()
         );
     }
 
     public static MenteeEntity toEntity(final Mentee mentee) {
+        var pairing = mentee.pairing();
         return new MenteeEntity(
             mentee.id(),
             mentee.name(),
             mentee.jobTitle(),
             mentee.location(),
-            toEntity(mentee.pairing()),
+            pairing != null ? toEntity(pairing) : null,
             mentee.pendingApplications().stream().map(Mapper::toEntity).toList()
         );
     }
 
     public static Mentee fromEntity(final MenteeEntity entity) {
+        var pairing = entity.pairing;
         return new Mentee(
             entity.id,
             entity.name,
             entity.jobTitle,
             entity.location,
-            fromEntity(entity.pairing),
+            pairing != null ? fromEntity(pairing) : null,
             entity.pendingApplications.stream().map(Mapper::fromEntity).toList()
         );
     }

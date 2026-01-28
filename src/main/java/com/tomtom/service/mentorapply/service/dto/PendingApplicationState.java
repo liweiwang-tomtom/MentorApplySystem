@@ -1,4 +1,4 @@
-package com.tomtom.service.mentorapply.dto;
+package com.tomtom.service.mentorapply.service.dto;
 
 public enum PendingApplicationState {
     NOT_STARTED,

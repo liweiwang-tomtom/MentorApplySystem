@@ -1,6 +1,6 @@
-package com.tomtom.service.mentorapply.entity;
+package com.tomtom.service.mentorapply.repository.entity;
 
-import com.tomtom.service.mentorapply.dto.PendingApplicationState;
+import com.tomtom.service.mentorapply.service.dto.PendingApplicationState;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -59,6 +60,9 @@ public class PendingApplicationEntity {
         this.id = 0L;
         this.mentorId = 0L;
         this.menteeId = 0L;
+        this.applyDate = LocalDate.now();
+        this.skillsToEnhance = Collections.emptyList();
+        this.state = PendingApplicationState.NOT_STARTED;
     }
 
     public PendingApplicationEntity(

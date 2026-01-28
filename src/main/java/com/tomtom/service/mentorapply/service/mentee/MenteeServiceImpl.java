@@ -1,7 +1,7 @@
 package com.tomtom.service.mentorapply.service.mentee;
 
-import com.tomtom.service.mentorapply.dto.Mentee;
-import com.tomtom.service.mentorapply.entity.MenteeEntity;
+import com.tomtom.service.mentorapply.service.dto.Mentee;
+import com.tomtom.service.mentorapply.repository.entity.MenteeEntity;
 import com.tomtom.service.mentorapply.mapper.Mapper;
 import com.tomtom.service.mentorapply.repository.MenteeRepository;
 import com.tomtom.service.mentorapply.service.api.MenteeService;

@@ -1,12 +1,11 @@
 package com.tomtom.service.mentorapply.repository;
 
-import com.tomtom.service.mentorapply.entity.MentorEntity;
+import com.tomtom.service.mentorapply.repository.entity.MentorEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public interface MentorRepository extends JpaRepository<MentorEntity, Long> {
     List<MentorEntity> findByName(@Param("name") String name);
 
     @Query("SELECT m FROM MentorEntity m WHERE LOWER(m.location) LIKE LOWER(CONCAT('%', :location, '%'))")
-    List<MentorEntity> findByLocation(@NonNull @Param("location") String location);
+    List<MentorEntity> findByLocation(@Param("location") String location);
 
     @Modifying
     @Transactional

@@ -1,7 +1,7 @@
 package com.tomtom.service.mentorapply.service.mentor;
 
-import com.tomtom.service.mentorapply.dto.Mentor;
-import com.tomtom.service.mentorapply.entity.MentorEntity;
+import com.tomtom.service.mentorapply.service.dto.Mentor;
+import com.tomtom.service.mentorapply.repository.entity.MentorEntity;
 import com.tomtom.service.mentorapply.mapper.Mapper;
 import com.tomtom.service.mentorapply.repository.MentorRepository;
 import com.tomtom.service.mentorapply.service.api.MentorService;

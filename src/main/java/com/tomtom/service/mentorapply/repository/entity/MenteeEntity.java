@@ -1,4 +1,4 @@
-package com.tomtom.service.mentorapply.entity;
+package com.tomtom.service.mentorapply.repository.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -9,8 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -22,16 +23,18 @@ public class MenteeEntity {
     @Column(name = "id", nullable = false)
     public long id;
 
-    @NonNull
     @Column(name = "name", nullable = false)
     public String name;
 
+    @Nullable
     @Column(name = "job_title")
     public String jobTitle;
 
+    @Nullable
     @Column(name = "location")
     public String location;
 
+    @Nullable
     @OneToOne(mappedBy = "mentee")
     public PairingEntity pairing;
 
@@ -41,14 +44,18 @@ public class MenteeEntity {
     public MenteeEntity() {
         this.id = 0L;
         this.name = "";
+        this.jobTitle = null;
+        this.location = null;
+        this.pairing = null;
+        this.pendingApplications = Collections.emptyList();;
     }
 
     public MenteeEntity(
         long id,
-        @NonNull String name,
-        String jobTitle,
-        String location,
-        PairingEntity pairing,
+        String name,
+        @Nullable String jobTitle,
+        @Nullable String location,
+        @Nullable PairingEntity pairing,
         List<PendingApplicationEntity> pendingApplications) {
         this.id = id;
         this.name = name;

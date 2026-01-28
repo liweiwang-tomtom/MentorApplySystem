@@ -1,7 +1,5 @@
-package com.tomtom.service.mentorapply.entity;
+package com.tomtom.service.mentorapply.repository.entity;
 
-
-import com.tomtom.service.mentorapply.dto.PendingApplication;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -14,8 +12,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -29,9 +28,11 @@ public class MentorEntity {
     @Column(name = "name", nullable = false)
     public String name;
 
+    @Nullable
     @Column(name = "job_title")
     public String jobTitle;
 
+    @Nullable
     @Column(name = "location")
     public String location;
 
@@ -43,6 +44,7 @@ public class MentorEntity {
     @Column(name = "available", nullable = false)
     public boolean available;
 
+    @Nullable
     @OneToOne(mappedBy = "mentor")
     public PairingEntity pairing;
 
@@ -51,12 +53,12 @@ public class MentorEntity {
 
     public MentorEntity(
         long id,
-        @NonNull String name,
-        String jobTitle,
-        String location,
+        String name,
+        @Nullable String jobTitle,
+        @Nullable String location,
         List<String> skills,
         boolean available,
-        PairingEntity pairing,
+        @Nullable PairingEntity pairing,
         List<PendingApplicationEntity> pendingApplications) {
         this.id = id;
         this.name = name;
@@ -71,5 +73,11 @@ public class MentorEntity {
     public MentorEntity() {
         this.id = 0L;
         this.name = "";
+        this.jobTitle = null;
+        this.location = null;
+        this.skills = Collections.emptyList();
+        this.available = false;
+        this.pairing = null;
+        this.pendingApplications = Collections.emptyList();
     }
 }
