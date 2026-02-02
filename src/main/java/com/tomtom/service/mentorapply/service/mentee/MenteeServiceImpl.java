@@ -1,14 +1,12 @@
 package com.tomtom.service.mentorapply.service.mentee;
 
-import com.tomtom.service.mentorapply.service.dto.Mentee;
-import com.tomtom.service.mentorapply.repository.entity.MenteeEntity;
 import com.tomtom.service.mentorapply.mapper.Mapper;
 import com.tomtom.service.mentorapply.repository.MenteeRepository;
 import com.tomtom.service.mentorapply.service.api.MenteeService;
+import com.tomtom.service.mentorapply.service.dto.Mentee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +32,10 @@ public class MenteeServiceImpl implements MenteeService {
 
     @Override
     public ResponseEntity<Mentee> getById(long id) {
-        return toResponse(menteeRepository.findById(id));
+        return menteeRepository
+            .findById(id)
+            .map(e -> ResponseEntity.ok(Mapper.fromEntity(e)))
+            .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @Override
@@ -65,13 +66,15 @@ public class MenteeServiceImpl implements MenteeService {
 
     @Override
     public ResponseEntity<Mentee> addOrUpdate(Mentee mentee) {
-        var entity = menteeRepository.save(Mapper.toEntity(mentee));
-        return toResponse(entity);
-    }
+        if (mentee.id() == null) {
+            var saved = menteeRepository.save(Mapper.toEntityForCreate(mentee));
+            return ResponseEntity.ok(Mapper.fromEntity(saved));
+        }
 
-    private ResponseEntity<Mentee> toResponse(@Nullable MenteeEntity entity) {
-        return entity == null
-            ? ResponseEntity.noContent().build()
-            : ResponseEntity.ok(Mapper.fromEntity(entity));
+        var saved = menteeRepository.findById(mentee.id())
+            .map(e -> menteeRepository.save(Mapper.updateEntity(e, mentee)))
+            .orElseGet(() -> menteeRepository.save(Mapper.toEntityForCreate(mentee)));
+
+        return ResponseEntity.ok(Mapper.fromEntity(saved));
     }
 }

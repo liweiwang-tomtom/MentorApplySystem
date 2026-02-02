@@ -5,13 +5,13 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 public record Mentor(
-    long id,
+    Long id,
     String name,
     @Nullable String jobTitle,
     @Nullable String location,
     List<String> skills,
     boolean available,
-    @Nullable Pairing pairing,
-    List<PendingApplication> pendingApplications
+    @Nullable Long pairingId,
+    List<Long> pendingApplicationIds
 ) {
 }

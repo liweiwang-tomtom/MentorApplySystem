@@ -4,9 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record PendingApplication(
-    long id,
-    long mentorId,
-    long menteeId,
+    Long id,
+    Long mentorId,
+    Long menteeId,
     LocalDate applyDate,
     List<String> skillsToEnhance,
     PendingApplicationState state

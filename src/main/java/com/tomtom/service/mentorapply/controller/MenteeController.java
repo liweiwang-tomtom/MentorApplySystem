@@ -4,8 +4,11 @@ import com.tomtom.service.mentorapply.service.dto.Mentee;
 import com.tomtom.service.mentorapply.service.api.MenteeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,13 +20,37 @@ public class MenteeController {
     private final MenteeService menteeService;
 
     @Autowired
-    public MenteeController(@NonNull final MenteeService menteeService) {
+    public MenteeController(final MenteeService menteeService) {
         this.menteeService = menteeService;
     }
 
     @GetMapping("/all")
-    @NonNull
     public ResponseEntity<List<Mentee>> getAllMentees() {
         return menteeService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Mentee> getById(@PathVariable Long id) {
+        return menteeService.getById(id);
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<Mentee>> getByName(@PathVariable String name) {
+        return menteeService.getByName(name);
+    }
+
+    @GetMapping("/location/{location}")
+    public ResponseEntity<List<Mentee>> getByLocation(@PathVariable String location) {
+        return menteeService.getByLocation(location);
+    }
+
+    @PostMapping
+    public ResponseEntity<Mentee> addOrUpdate(@RequestBody Mentee mentee) {
+        return menteeService.addOrUpdate(mentee);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        return menteeService.deleteById(id);
     }
 }

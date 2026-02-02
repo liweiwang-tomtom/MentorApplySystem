@@ -4,13 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record Pairing(
-    long id,
-    long mentorId,
-    long menteeId,
+    Long id,
+    Long mentorId,
+    Long menteeId,
     LocalDate applyDate,
     LocalDate startDate,
     LocalDate endDate,
-    List<String> skillsToEnhance,
-    PairingState state
+    List<String> skillsToEnhance
 ) {
 }

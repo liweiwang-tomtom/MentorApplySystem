@@ -12,9 +12,6 @@ import java.util.List;
 
 @Repository
 public interface MentorRepository extends JpaRepository<MentorEntity, Long> {
-    @Query("SELECT m FROM MentorEntity m WHERE m.id = :id")
-    MentorEntity findById(@Param("id") long id);
-
     @Query("SELECT m FROM MentorEntity m WHERE m.name = :name")
     List<MentorEntity> findByName(@Param("name") String name);
 
@@ -24,5 +21,5 @@ public interface MentorRepository extends JpaRepository<MentorEntity, Long> {
     @Modifying
     @Transactional
     @Query("DELETE FROM MentorEntity m WHERE m.id = :id")
-    void deleteById(@Param("id") long id);
+    void deleteById(@Param("id") Long id);
 }

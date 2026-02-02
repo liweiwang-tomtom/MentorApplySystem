@@ -12,9 +12,6 @@ import java.util.List;
 
 @Repository
 public interface MenteeRepository extends JpaRepository<MenteeEntity, Long> {
-    @Query("SELECT m FROM MenteeEntity m WHERE m.id = :id")
-    MenteeEntity findById(@Param("id") long id);
-
     @Query("SELECT m FROM MenteeEntity m WHERE m.name = :name")
     List<MenteeEntity> findByName(@Param("name") String name);
 

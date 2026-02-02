@@ -1,14 +1,12 @@
 package com.tomtom.service.mentorapply.service.mentor;
 
-import com.tomtom.service.mentorapply.service.dto.Mentor;
-import com.tomtom.service.mentorapply.repository.entity.MentorEntity;
 import com.tomtom.service.mentorapply.mapper.Mapper;
 import com.tomtom.service.mentorapply.repository.MentorRepository;
 import com.tomtom.service.mentorapply.service.api.MentorService;
+import com.tomtom.service.mentorapply.service.dto.Mentor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +32,10 @@ public class MentorServiceImpl implements MentorService {
 
     @Override
     public ResponseEntity<Mentor> getById(long id) {
-        return toResponse(mentorRepository.findById(id));
+        return mentorRepository
+            .findById(id)
+            .map(e -> ResponseEntity.ok(Mapper.fromEntity(e)))
+            .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @Override
@@ -65,13 +66,16 @@ public class MentorServiceImpl implements MentorService {
 
     @Override
     public ResponseEntity<Mentor> addOrUpdate(Mentor mentor) {
-        var entity = mentorRepository.save(Mapper.toEntity(mentor));
-        return toResponse(entity);
-    }
+        if (mentor.id() == null) {
+            var saved = mentorRepository.save(Mapper.toEntityForCreate(mentor));
+            return ResponseEntity.ok(Mapper.fromEntity(saved));
+        }
 
-    private ResponseEntity<Mentor> toResponse(@Nullable MentorEntity entity) {
-        return entity == null
-            ? ResponseEntity.noContent().build()
-            : ResponseEntity.ok(Mapper.fromEntity(entity));
+        var saved = mentorRepository.findById(mentor.id())
+            .map(e -> mentorRepository.save(Mapper.updateEntity(e, mentor)))
+            .orElseGet(() -> mentorRepository.save(Mapper.toEntityForCreate(mentor)));
+
+        return ResponseEntity.ok(Mapper.fromEntity(saved));
+
     }
 }
