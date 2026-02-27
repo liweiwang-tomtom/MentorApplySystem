@@ -20,7 +20,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "TBL_MENTORS")
-
 public class MentorEntity {
 
     @Id

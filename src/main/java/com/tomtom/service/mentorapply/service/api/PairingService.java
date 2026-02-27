@@ -25,19 +25,19 @@ public interface PairingService {
     /**
      * Mentor declines an application from mentee.
      */
-    ResponseEntity<PendingApplication> declineApplication(long applicationId);
+    ResponseEntity<Void> declineApplication(long applicationId, long mentorId);
 
     /**
      * Mentor approves one pending application and declines others.
      * If both mentor and mentee are available, create a pairing and return a pairing and decline other pending applications.
      * Otherwise, return bad-request.
      */
-    ResponseEntity<Pairing> approveApplication(long applicationId);
+    ResponseEntity<Pairing> approveApplication(long applicationId, long mentorId);
 
     /**
      * Mentee cancels (deletes) a submitted application.
      */
-    ResponseEntity<Void> cancelApplication(long applicationId);
+    ResponseEntity<Void> cancelApplication(long applicationId, long menteeId);
 
     /**
      * System administrator cancels (deletes) a pairing.
@@ -45,7 +45,9 @@ public interface PairingService {
     ResponseEntity<Pairing> cancelPairing(long paringId);
 
     /**
-     * System administrator deletes outdated pairings.
+     * System administrator deletes outdated pairings and applications.
+     * A pairing is outdated if the end date is before the current date.
+     * An application is outdated if the applied date is 6 months before the current date.
      */
-    ResponseEntity<Void> deleteOutdatedPairing();
+    ResponseEntity<Void> deleteOutdatedPairingAndApplications();
 }
