@@ -24,5 +24,5 @@ public interface PairingRepository extends JpaRepository<PairingEntity, Long> {
     @Modifying
     @Transactional
     @Query("DELETE FROM PairingEntity p WHERE p.endDate < :limit")
-    int deleteOutdatedPairing(@Param("limit") LocalDate limit);
+    void deleteOutdatedPairing(@Param("limit") LocalDate limit);
 }

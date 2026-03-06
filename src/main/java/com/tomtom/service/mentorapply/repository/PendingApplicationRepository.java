@@ -2,7 +2,6 @@ package com.tomtom.service.mentorapply.repository;
 
 import com.tomtom.service.mentorapply.repository.entity.PendingApplicationEntity;
 import com.tomtom.service.mentorapply.service.dto.PendingApplicationState;
-import org.jspecify.annotations.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,13 +21,13 @@ public interface PendingApplicationRepository extends JpaRepository<PendingAppli
     List<PendingApplicationEntity> findByMenteeId(@Param("menteeId") long id);
 
     @Query("SELECT p FROM PendingApplicationEntity p WHERE p.mentor.id = :mentorId AND p.mentee.id = :menteeId AND p.state = :state")
-    List<PendingApplicationEntity> findByMenteeAndMentorIdWithState(
+    List<PendingApplicationEntity> findByMentorAndMenteeIdWithState(
         @Param("mentorId") long mentorId,
         @Param("menteeId") long menteeId,
         @Param("state") PendingApplicationState state);
 
     @Query("SELECT p FROM PendingApplicationEntity p WHERE p.mentor.id = :mentorId AND p.mentee.id = :menteeId AND p.state != :state")
-    List<PendingApplicationEntity> findByMenteeAndMentorIdWithoutState(
+    List<PendingApplicationEntity> findByMentorAndMenteeIdWithoutState(
         @Param("mentorId") long mentorId,
         @Param("menteeId") long menteeId,
         @Param("state") PendingApplicationState state);
@@ -37,6 +36,18 @@ public interface PendingApplicationRepository extends JpaRepository<PendingAppli
     @Transactional
     @Query("UPDATE PendingApplicationEntity p SET p.state = :state WHERE p.id = :id")
     int updateApplicationState(@Param("id") long id, @Param("state") PendingApplicationState state);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE PendingApplicationEntity p SET p.state = 'DECLINED' WHERE p.mentor.id = :mentorId AND p.id <> :approvedId AND p.state = 'WAITING_APPROVAL'")
+    void declineMentorOtherApplications(@Param("mentorId") long mentorId, @Param("approvedId") long approvedId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("DELETE FROM PendingApplicationEntity p WHERE p.mentee.id = :menteeId AND p.id <> :approvedId AND p.state = 'WAITING_APPROVAL'")
+    void cancelMenteeOtherApplications(@Param("menteeId") long menteeId, @Param("approvedId") long approvedId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE PendingApplicationEntity p SET p.state = 'APPROVED' WHERE p.id = :id AND p.mentor.id = :mentorId AND p.mentee.id = :menteeId AND p.state = 'WAITING_APPROVAL'")
+    int approveApplicationWithMentorMenteeId(@Param("mentorId") long mentorId, @Param("menteeId") long menteeId, @Param("id") long id);
 
     @Modifying
     @Transactional

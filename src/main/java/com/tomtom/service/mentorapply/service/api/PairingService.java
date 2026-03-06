@@ -11,7 +11,7 @@ public interface PairingService {
 
     ResponseEntity<Pairing> getPairingByMentorId(long mentorId);
 
-    ResponseEntity<Pairing> getParingByMenteeId(long menteeId);
+    ResponseEntity<Pairing> getPairingByMenteeId(long menteeId);
 
     ResponseEntity<List<PendingApplication>> getApplicationByMentorId(long mentorId);
 
@@ -32,7 +32,7 @@ public interface PairingService {
      * If both mentor and mentee are available, create a pairing and return a pairing and decline other pending applications.
      * Otherwise, return bad-request.
      */
-    ResponseEntity<Pairing> approveApplication(long applicationId, long mentorId);
+    ResponseEntity<Pairing> approveApplication(long applicationId, long mentorId, long menteeId);
 
     /**
      * Mentee cancels (deletes) a submitted application.
@@ -42,7 +42,7 @@ public interface PairingService {
     /**
      * System administrator cancels (deletes) a pairing.
      */
-    ResponseEntity<Pairing> cancelPairing(long paringId);
+    ResponseEntity<Void> cancelPairing(long paringId);
 
     /**
      * System administrator deletes outdated pairings and applications.

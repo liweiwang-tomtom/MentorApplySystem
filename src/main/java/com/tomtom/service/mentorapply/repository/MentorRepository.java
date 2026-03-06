@@ -2,6 +2,7 @@ package com.tomtom.service.mentorapply.repository;
 
 import com.tomtom.service.mentorapply.repository.entity.MentorEntity;
 import jakarta.transaction.Transactional;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,5 +22,8 @@ public interface MentorRepository extends JpaRepository<MentorEntity, Long> {
     @Modifying
     @Transactional
     @Query("DELETE FROM MentorEntity m WHERE m.id = :id")
-    void deleteById(@Param("id") Long id);
+    void deleteById(@Param("id") long id);
+
+    @Query("SELECT (COUNT(m) > 0) FROM MentorEntity m WHERE m.id = :id AND m.available = true")
+    boolean existsAndAvailable(@Param("id") long id);
 }

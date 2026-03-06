@@ -59,7 +59,7 @@ public class PairingServiceImpl implements PairingService {
     }
 
     @Override
-    public ResponseEntity<Pairing> getParingByMenteeId(long menteeId) {
+    public ResponseEntity<Pairing> getPairingByMenteeId(long menteeId) {
         var pairing = pairingRepository
             .findByMenteeId(menteeId);
         if (pairing == null) {
@@ -91,21 +91,25 @@ public class PairingServiceImpl implements PairingService {
     @Override
     @Transactional
     public ResponseEntity<PendingApplication> submitApplication(long mentorId, long menteeId) {
-        // Make sure the mentor and mentee are not already paired.
-        var isMentorAvailable = pairingRepository.findByMentorId(mentorId) == null;
-        if (!isMentorAvailable) {
+        // Make sure the mentor is available.
+        if (!mentorRepository.existsAndAvailable(mentorId)) {
             return ResponseEntity.badRequest().build();
         }
-        var isMenteeAvailable = pairingRepository.findByMenteeId(menteeId) == null;
-        if (!isMenteeAvailable) {
+        // Make sure the mentor and mentee are not paired yet.
+        var isMentorPaired = pairingRepository.findByMentorId(mentorId) != null;
+        if (isMentorPaired) {
+            return ResponseEntity.badRequest().build();
+        }
+        var isMenteePaired = pairingRepository.findByMenteeId(menteeId) != null;
+        if (isMenteePaired) {
             return ResponseEntity.badRequest().build();
         }
 
-        // Make sure submitted applications don't repeat.
-        var savedApplication = pendingApplicationRepository
-            .findByMenteeAndMentorIdWithoutState(mentorId, menteeId, PendingApplicationState.DECLINED);
-        if (!savedApplication.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Mapper.fromEntity(savedApplication.getFirst()));
+        // Avoid submitting duplicate applications.
+        var savedPendingApplication = pendingApplicationRepository
+            .findByMentorAndMenteeIdWithState(mentorId, menteeId, PendingApplicationState.WAITING_APPROVAL);
+        if (!savedPendingApplication.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Mapper.fromEntity(savedPendingApplication.getFirst()));
         }
 
         // Create a new application.
@@ -129,7 +133,9 @@ public class PairingServiceImpl implements PairingService {
     @Override
     public ResponseEntity<Void> declineApplication(long applicationId, long mentorId) {
         var application = pendingApplicationRepository.findById(applicationId).orElse(null);
-        if (application == null || application.state == PendingApplicationState.APPROVED) {
+        if (application == null ||
+            application.state == PendingApplicationState.APPROVED ||
+            application.mentor.id != mentorId) {
             return ResponseEntity.badRequest().build();
         }
         var modificationResult = pendingApplicationRepository
@@ -141,30 +147,36 @@ public class PairingServiceImpl implements PairingService {
     }
 
     @Override
-    public ResponseEntity<Pairing> approveApplication(long applicationId, long mentorId) {
-        var isMentorAvailable = pairingRepository.findByMentorId(mentorId) == null;
-        if (!isMentorAvailable) {
+    @Transactional
+    public ResponseEntity<Pairing> approveApplication(long applicationId, long mentorId, long menteeId) {
+        // Mentor and mentee must not already be paired
+        if (pairingRepository.findByMentorId(mentorId) != null || pairingRepository.findByMenteeId(menteeId) != null) {
             return ResponseEntity.badRequest().build();
         }
-        var modificationResult = pendingApplicationRepository
-            .updateApplicationState(applicationId, PendingApplicationState.APPROVED);
-        if (modificationResult == 0) {
+        // Approve this application
+        int approveApplicationResult = pendingApplicationRepository
+            .approveApplicationWithMentorMenteeId(mentorId, menteeId, applicationId);
+        if (approveApplicationResult == 0) {
             return ResponseEntity.notFound().build();
         }
+        // Decline all other WAITING applications for this mentor
+        pendingApplicationRepository.declineMentorOtherApplications(mentorId, applicationId);
+        // Decline all other WAITING applications for this mentee
+        pendingApplicationRepository.cancelMenteeOtherApplications(menteeId, applicationId);
+        // Reload approved application after state update
         var approvedApplication = pendingApplicationRepository.findById(applicationId).orElse(null);
         if (approvedApplication == null) {
             return ResponseEntity.internalServerError().build();
         }
-
-        // Create a new pairing.
-        var pairing = new PairingEntity();
-        pairing.mentor = approvedApplication.mentor;
-        pairing.mentee = approvedApplication.mentee;
-        pairing.applyDate = approvedApplication.applyDate;
-        pairing.startDate = LocalDate.now();
-        pairing.endDate = LocalDate.now().plusMonths(6);
-
-        return ResponseEntity.ok(Mapper.fromEntity(pairingRepository.save(pairing)));
+        // Save a new pairing.
+        var pairingEntity = new PairingEntity();
+        pairingEntity.mentor = approvedApplication.mentor;
+        pairingEntity.mentee = approvedApplication.mentee;
+        pairingEntity.applyDate = approvedApplication.applyDate;
+        pairingEntity.startDate = LocalDate.now();
+        pairingEntity.endDate = LocalDate.now().plusMonths(6);
+        var pairing = Mapper.fromEntity(pairingRepository.save(pairingEntity));
+        return ResponseEntity.ok(pairing);
     }
 
     @Override
@@ -180,7 +192,7 @@ public class PairingServiceImpl implements PairingService {
     }
 
     @Override
-    public ResponseEntity<Pairing> cancelPairing(long paringId) {
+    public ResponseEntity<Void> cancelPairing(long paringId) {
         pairingRepository.deleteById(paringId);
         return ResponseEntity.noContent().build();
     }
