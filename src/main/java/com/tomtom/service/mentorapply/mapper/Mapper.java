@@ -9,7 +9,7 @@ import com.tomtom.service.mentorapply.service.dto.Mentor;
 import com.tomtom.service.mentorapply.service.dto.Pairing;
 import com.tomtom.service.mentorapply.service.dto.PendingApplication;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Mapper {
     public static Mentor fromEntity(MentorEntity e) {
@@ -18,7 +18,7 @@ public class Mapper {
             e.name,
             e.jobTitle,
             e.location,
-            List.copyOf(e.skills),
+            new ArrayList<>(e.skills),
             e.available,
             e.pairing != null ? e.pairing.id : null,
             e.pendingApplications.stream().map(pa -> pa.id).toList()
@@ -31,7 +31,7 @@ public class Mapper {
         e.name = dto.name();
         e.jobTitle = dto.jobTitle();
         e.location = dto.location();
-        e.skills = List.copyOf(dto.skills());
+        e.skills = new ArrayList<>(dto.skills());
         e.available = dto.available();
         return e;
     }
@@ -40,7 +40,7 @@ public class Mapper {
         e.name = dto.name();
         e.jobTitle = dto.jobTitle();
         e.location = dto.location();
-        e.skills = List.copyOf(dto.skills());
+        e.skills = new ArrayList<>(dto.skills());
         e.available = dto.available();
         return e;
     }
@@ -88,7 +88,7 @@ public class Mapper {
             e.applyDate,
             e.startDate,
             e.endDate,
-            List.copyOf(e.skillsToEnhance)
+            new ArrayList<>(e.skillsToEnhance)
         );
     }
 
@@ -100,7 +100,7 @@ public class Mapper {
         e.applyDate = dto.applyDate();
         e.startDate = dto.startDate();
         e.endDate = dto.endDate();
-        e.skillsToEnhance = List.copyOf(dto.skillsToEnhance());
+        e.skillsToEnhance = new ArrayList<>(dto.skillsToEnhance());
         return e;
     }
 
@@ -114,7 +114,7 @@ public class Mapper {
             e.mentor.id,
             e.mentee.id,
             e.applyDate,
-            List.copyOf(e.skillsToEnhance),
+            new ArrayList<>(e.skillsToEnhance),
             e.state
         );
     }
@@ -129,9 +129,8 @@ public class Mapper {
         e.mentor = mentor;
         e.mentee = mentee;
         e.applyDate = dto.applyDate();
-        e.skillsToEnhance = List.copyOf(dto.skillsToEnhance());
+        e.skillsToEnhance = new ArrayList<>(dto.skillsToEnhance());
         e.state = dto.state();
         return e;
     }
-
 }

@@ -14,4 +14,9 @@ public record Mentor(
     @Nullable Long pairingId,
     List<Long> pendingApplicationIds
 ) {
+    public Mentor {
+        skills = skills == null ? List.of() : skills;
+        pendingApplicationIds =
+            pendingApplicationIds == null ? List.of() : pendingApplicationIds;
+    }
 }

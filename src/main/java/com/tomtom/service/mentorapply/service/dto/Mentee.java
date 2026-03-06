@@ -12,4 +12,8 @@ public record Mentee(
     @Nullable Long pairingId,
     List<Long> pendingApplicationIds
 ) {
+    public Mentee {
+        pendingApplicationIds =
+            pendingApplicationIds == null ? List.of() : pendingApplicationIds;
+    }
 }

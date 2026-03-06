@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface MentorRepository extends JpaRepository<MentorEntity, Long> {
-    @Query("SELECT m FROM MentorEntity m WHERE m.name = :name")
+    @Query("SELECT m FROM MentorEntity m WHERE LOWER(m.name) LIKE %:name%")
     List<MentorEntity> findByName(@Param("name") String name);
 
     @Query("SELECT m FROM MentorEntity m WHERE LOWER(m.location) LIKE LOWER(CONCAT('%', :location, '%'))")

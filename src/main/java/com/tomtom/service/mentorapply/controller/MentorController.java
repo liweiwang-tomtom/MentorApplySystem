@@ -30,7 +30,7 @@ public class MentorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Mentor> getById(@PathVariable Long id) {
+    public ResponseEntity<Mentor> getById(@PathVariable long id) {
         return mentorService.getById(id);
     }
 
@@ -50,7 +50,7 @@ public class MentorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable long id) {
         return mentorService.deleteById(id);
     }
 }
