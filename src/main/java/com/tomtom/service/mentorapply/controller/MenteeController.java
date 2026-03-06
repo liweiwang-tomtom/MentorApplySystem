@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/mentor")
+@RequestMapping("api/v1/mentee")
 public class MenteeController {
     private final MenteeService menteeService;
 

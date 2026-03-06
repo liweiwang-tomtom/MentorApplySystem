@@ -14,11 +14,13 @@ import com.tomtom.service.mentorapply.service.dto.PendingApplicationState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Service
 public class PairingServiceImpl implements PairingService {
     private final PairingRepository pairingRepository;
     private final PendingApplicationRepository pendingApplicationRepository;
