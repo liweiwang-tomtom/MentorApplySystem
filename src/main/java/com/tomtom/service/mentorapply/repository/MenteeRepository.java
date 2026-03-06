@@ -12,10 +12,10 @@ import java.util.List;
 
 @Repository
 public interface MenteeRepository extends JpaRepository<MenteeEntity, Long> {
-    @Query("SELECT m FROM MenteeEntity m WHERE m.name = :name")
+    @Query("SELECT m FROM MenteeEntity m WHERE LOWER(m.name) LIKE %:name%")
     List<MenteeEntity> findByName(@Param("name") String name);
 
-    @Query("SELECT m FROM MentorEntity m WHERE LOWER(m.location) LIKE LOWER(CONCAT('%', :location, '%'))")
+    @Query("SELECT m FROM MenteeEntity m WHERE LOWER(m.location) LIKE LOWER(CONCAT('%', :location, '%'))")
     List<MenteeEntity> findByLocation(@Param("location") String location);
 
     @Modifying
