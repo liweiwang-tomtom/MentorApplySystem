@@ -50,7 +50,7 @@ public class MenteeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable long id) {
         return menteeService.deleteById(id);
     }
 }
