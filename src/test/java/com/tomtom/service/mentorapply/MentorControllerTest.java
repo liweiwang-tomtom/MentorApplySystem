@@ -1,8 +1,8 @@
 package com.tomtom.service.mentorapply;
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tomtom.service.mentorapply.service.dto.Mentor;
+import com.tomtom.service.mentorapply.utils.ResultMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -279,14 +279,10 @@ public class MentorControllerTest {
     }
 
     private Mentor parseMentor(MvcResult result) throws Exception {
-        String responseBody = result.getResponse().getContentAsString();
-        return objectMapper.readValue(responseBody, Mentor.class);
+        return ResultMapper.parseMentor(result, objectMapper);
     }
 
     private List<Mentor> parseMentorList(MvcResult result) throws Exception {
-        String responseBody = result.getResponse().getContentAsString();
-        JavaType mentorListType = objectMapper.getTypeFactory()
-            .constructCollectionType(List.class, Mentor.class);
-        return objectMapper.readValue(responseBody, mentorListType);
+        return ResultMapper.parseMentorList(result, objectMapper);
     }
 }

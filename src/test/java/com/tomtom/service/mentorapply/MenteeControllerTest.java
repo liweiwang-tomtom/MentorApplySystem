@@ -1,9 +1,9 @@
 package com.tomtom.service.mentorapply;
 
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tomtom.service.mentorapply.service.dto.Mentee;
+import com.tomtom.service.mentorapply.utils.ResultMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -240,16 +240,10 @@ public class MenteeControllerTest {
     }
 
     private Mentee parseMentee(MvcResult result) throws Exception {
-        return objectMapper.readValue(
-            result.getResponse().getContentAsString(),
-            Mentee.class
-        );
+        return ResultMapper.parseMentee(result, objectMapper);
     }
 
     private List<Mentee> parseMenteeList(MvcResult result) throws Exception {
-        String body = result.getResponse().getContentAsString();
-        JavaType type = objectMapper.getTypeFactory()
-            .constructCollectionType(List.class, Mentee.class);
-        return objectMapper.readValue(body, type);
+        return ResultMapper.parseMenteeList(result, objectMapper);
     }
 }

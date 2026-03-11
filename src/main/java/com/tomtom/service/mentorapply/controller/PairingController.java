@@ -18,7 +18,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/api/pairings")
+@RequestMapping("api/v1/pairings")
 public class PairingController {
     private final PairingService pairingService;
 
