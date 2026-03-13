@@ -164,7 +164,7 @@ public class PairingServiceImpl implements PairingService {
         // Decline all other WAITING applications for this mentor
         pendingApplicationRepository.declineMentorOtherApplications(mentorId, applicationId);
         // Decline all other WAITING applications for this mentee
-        pendingApplicationRepository.cancelMenteeOtherApplications(menteeId, applicationId);
+        pendingApplicationRepository.declineMenteeOtherApplications(menteeId, applicationId);
         // Reload approved application after state update
         var approvedApplication = pendingApplicationRepository.findById(applicationId).orElse(null);
         if (approvedApplication == null) {

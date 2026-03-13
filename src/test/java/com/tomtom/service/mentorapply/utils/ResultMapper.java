@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tomtom.service.mentorapply.service.dto.Mentee;
 import com.tomtom.service.mentorapply.service.dto.Mentor;
+import com.tomtom.service.mentorapply.service.dto.Pairing;
 import com.tomtom.service.mentorapply.service.dto.PendingApplication;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -48,5 +49,12 @@ public class ResultMapper {
         JavaType type = objectMapper.getTypeFactory()
             .constructCollectionType(List.class, PendingApplication.class);
         return objectMapper.readValue(body, type);
+    }
+
+    static public Pairing parsePairing(MvcResult result, ObjectMapper objectMapper) throws Exception {
+        return objectMapper.readValue(
+            result.getResponse().getContentAsString(),
+            Pairing.class
+        );
     }
 }

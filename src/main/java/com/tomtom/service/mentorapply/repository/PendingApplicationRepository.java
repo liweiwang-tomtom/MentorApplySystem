@@ -42,8 +42,8 @@ public interface PendingApplicationRepository extends JpaRepository<PendingAppli
     void declineMentorOtherApplications(@Param("mentorId") long mentorId, @Param("approvedId") long approvedId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("DELETE FROM PendingApplicationEntity p WHERE p.mentee.id = :menteeId AND p.id <> :approvedId AND p.state = 'WAITING_APPROVAL'")
-    void cancelMenteeOtherApplications(@Param("menteeId") long menteeId, @Param("approvedId") long approvedId);
+    @Query("UPDATE PendingApplicationEntity p SET p.state = 'DECLINED' WHERE p.mentee.id = :menteeId AND p.id <> :approvedId AND p.state = 'WAITING_APPROVAL'")
+    void declineMenteeOtherApplications(@Param("menteeId") long menteeId, @Param("approvedId") long approvedId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE PendingApplicationEntity p SET p.state = 'APPROVED' WHERE p.id = :id AND p.mentor.id = :mentorId AND p.mentee.id = :menteeId AND p.state = 'WAITING_APPROVAL'")
