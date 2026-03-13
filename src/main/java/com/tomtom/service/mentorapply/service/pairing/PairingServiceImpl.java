@@ -129,6 +129,8 @@ public class PairingServiceImpl implements PairingService {
         entity.applyDate = LocalDate.now();
         entity.state = PendingApplicationState.WAITING_APPROVAL;
         var application = Mapper.fromEntity(pendingApplicationRepository.save(entity));
+        entity.mentor.pendingApplications.add(entity);
+        entity.mentee.pendingApplications.add(entity);
         return ResponseEntity.ok(application);
     }
 

@@ -3,8 +3,11 @@ package com.tomtom.service.mentorapply;
 import com.tomtom.service.mentorapply.service.dto.PendingApplicationState;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+
 import static com.tomtom.service.mentorapply.utils.ResultMapper.parseApplication;
 import static com.tomtom.service.mentorapply.utils.ResultMapper.parseApplicationList;
+import static com.tomtom.service.mentorapply.utils.ResultMapper.parseMentor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -109,5 +112,39 @@ public class ApplicationSubmissionTest extends BasePairingControllerTest {
                     .param("menteeId", mentee2.id().toString())
             )
             .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void update_mentor_mentee_pending_application_ids_after_adding_applications() throws Exception {
+        mockMvc.perform(
+                post("/api/v1/pairings/applications")
+                    .param("mentorId", mentor1.id().toString())
+                    .param("menteeId", mentee1.id().toString())
+            )
+            .andExpect(status().isOk());
+        mockMvc.perform(
+                post("/api/v1/pairings/applications")
+                    .param("mentorId", mentor1.id().toString())
+                    .param("menteeId", mentee2.id().toString())
+            )
+            .andExpect(status().isOk());
+        // Assert that mentor1 has 2 pending applications.
+        var findMentor1Result = mockMvc.perform(get("/api/v1/mentor/" + mentor1.id()))
+            .andExpect(status().isOk())
+            .andReturn();
+        var mentor1WithApplicationIds = parseMentor(findMentor1Result, objectMapper);
+        assertEquals(2, mentor1WithApplicationIds.pendingApplicationIds().size());
+
+        // Assert that mentee1 and mentee2 have 1 pending application.
+        var findMenteeResult = mockMvc.perform(get("/api/v1/mentee/" + mentee1.id()))
+            .andExpect(status().isOk())
+            .andReturn();
+        var menteeWithApplicationIds = parseMentor(findMenteeResult, objectMapper);
+        assertEquals(1, menteeWithApplicationIds.pendingApplicationIds().size());
+        findMenteeResult = mockMvc.perform(get("/api/v1/mentee/" + mentee2.id()))
+            .andExpect(status().isOk())
+            .andReturn();
+        menteeWithApplicationIds = parseMentor(findMenteeResult, objectMapper);
+        assertEquals(1, menteeWithApplicationIds.pendingApplicationIds().size());
     }
 }

@@ -152,7 +152,7 @@ public class ApplicationApprovalTest extends BasePairingControllerTest {
     }
 
     @Test
-    void return_paired_state_after_approving_application() throws Exception {
+    void update_mentor_mentee_paired_state_after_approving_application() throws Exception {
         // Mentor1 approves application from mentee3.
         var applicationId = applicationIds.get(Pair.of(mentor1, mentee3));
         var approvalResult = mockMvc.perform(
