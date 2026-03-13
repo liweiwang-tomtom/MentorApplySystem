@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import static com.tomtom.service.mentorapply.utils.ResultMapper.parseApplication;
 import static com.tomtom.service.mentorapply.utils.ResultMapper.parseApplicationList;
+import static com.tomtom.service.mentorapply.utils.ResultMapper.parseMentor;
 import static com.tomtom.service.mentorapply.utils.ResultMapper.parsePairing;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -68,10 +69,12 @@ public class ApplicationApprovalTest extends BasePairingControllerTest {
         var allApplicationsOfMentor1 = parseApplicationList(findApplicationByMentorIdResult, objectMapper);
         assertEquals(3, allApplicationsOfMentor1.size());
         allApplicationsOfMentor1.forEach(application -> {
-            if (!Objects.equals(application.id(), applicationId)) {
-                assertEquals(PendingApplicationState.DECLINED, application.state());
-            } else {
+            if (Objects.equals(application.id(), applicationId)) {
+                assertEquals(applicationId, application.id());
+                assertEquals(mentee1.id(), application.menteeId());
                 assertEquals(PendingApplicationState.APPROVED, application.state());
+            } else {
+                assertEquals(PendingApplicationState.DECLINED, application.state());
             }
         });
         // Assert mentee1's other applications are declined.'
@@ -127,5 +130,85 @@ public class ApplicationApprovalTest extends BasePairingControllerTest {
                     .param("menteeId", mentee1.id().toString())
             )
             .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void paired_mentee_can_not_submit_new_application() throws Exception {
+        // Mentor1 approves application from mentee2.
+        var applicationId = applicationIds.get(Pair.of(mentor1, mentee2));
+        mockMvc.perform(
+                post("/api/v1/pairings/applications/{applicationId}:approve", applicationId.toString())
+                    .param("mentorId", mentor1.id().toString())
+                    .param("menteeId", mentee2.id().toString())
+            )
+            .andExpect(status().isOk());
+        // Return bad request when mentee2 submits a new application.
+        mockMvc.perform(
+                post("/api/v1/pairings/applications")
+                    .param("mentorId", mentor2.id().toString())
+                    .param("menteeId", mentee2.id().toString())
+            )
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void return_paired_state_after_approving_application() throws Exception {
+        // Mentor1 approves application from mentee3.
+        var applicationId = applicationIds.get(Pair.of(mentor1, mentee3));
+        var approvalResult = mockMvc.perform(
+                post("/api/v1/pairings/applications/{applicationId}:approve", applicationId.toString())
+                    .param("mentorId", mentor1.id().toString())
+                    .param("menteeId", mentee3.id().toString())
+            )
+            .andExpect(status().isOk())
+            .andReturn();
+        var pairing = parsePairing(approvalResult, objectMapper);
+        // Assert mentor1's pairing state is updated.
+        var findMentor1Result = mockMvc.perform(get("/api/v1/mentor/" + mentor1.id()))
+            .andExpect(status().isOk())
+            .andReturn();
+        var mentor1WithPairState = parseMentor(findMentor1Result, objectMapper);
+        assertEquals(pairing.id(), mentor1WithPairState.pairingId());
+        // Assert mentee3's pairing state is updated.
+        var findMentee3Result = mockMvc.perform(get("/api/v1/mentee/" + mentee3.id()))
+            .andExpect(status().isOk())
+            .andReturn();
+        var mentee3WithPairState = parseMentor(findMentee3Result, objectMapper);
+        assertEquals(pairing.id(), mentee3WithPairState.pairingId());
+    }
+
+    @Test
+    void return_bad_request_when_mentor_approves_multiple_applications() throws Exception {
+        mockMvc.perform(
+                post(
+                    "/api/v1/pairings/applications/{applicationId}:approve",
+                    applicationIds.get(Pair.of(mentor1, mentee1)).toString()
+                )
+                    .param("mentorId", mentor1.id().toString())
+                    .param("menteeId", mentee1.id().toString())
+            )
+            .andExpect(status().isOk());
+        mockMvc.perform(
+                post(
+                    "/api/v1/pairings/applications/{applicationId}:approve",
+                    applicationIds.get(Pair.of(mentor1, mentee3)).toString()
+                )
+                    .param("mentorId", mentor1.id().toString())
+                    .param("menteeId", mentee3.id().toString())
+            )
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void return_bad_request_when_application_mismatch() throws Exception {
+        mockMvc.perform(
+                post(
+                    "/api/v1/pairings/applications/{applicationId}:approve",
+                    applicationIds.get(Pair.of(mentor1, mentee1)).toString()
+                )
+                    .param("mentorId", mentor2.id().toString())
+                    .param("menteeId", mentee1.id().toString())
+            )
+            .andExpect(status().isNotFound());
     }
 }

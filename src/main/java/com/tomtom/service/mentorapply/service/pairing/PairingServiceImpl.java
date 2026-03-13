@@ -177,8 +177,11 @@ public class PairingServiceImpl implements PairingService {
         pairingEntity.applyDate = approvedApplication.applyDate;
         pairingEntity.startDate = LocalDate.now();
         pairingEntity.endDate = LocalDate.now().plusMonths(6);
-        var pairing = Mapper.fromEntity(pairingRepository.save(pairingEntity));
-        return ResponseEntity.ok(pairing);
+        pairingEntity = pairingRepository.save(pairingEntity);
+        // Update mentor and mentee's pairing state, no need to flush.
+        approvedApplication.mentor.pairing = pairingEntity;
+        approvedApplication.mentee.pairing = pairingEntity;
+        return ResponseEntity.ok(Mapper.fromEntity(pairingEntity));
     }
 
     @Override
