@@ -28,7 +28,7 @@ public class MentorEntity {
     public Long id;
 
     @Column(name = "name", nullable = false)
-    public String name;
+    public String name = "";
 
     @Nullable
     @Column(name = "job_title")

@@ -4,12 +4,15 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
-public record Mentee(
-    Long id,
-    String name,
+/**
+ * Mentee data parsed from frontend JSON, all fields are nullable.
+ */
+public record MenteeInput(
+    @Nullable Long id,
+    @Nullable String name,
     @Nullable String jobTitle,
     @Nullable String location,
     @Nullable Long pairingId,
-    List<Long> pendingApplicationIds
+    @Nullable List<Long> pendingApplicationIds
 ) {
 }

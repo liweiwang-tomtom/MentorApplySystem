@@ -1,7 +1,8 @@
 package com.tomtom.service.mentorapply.controller;
 
-import com.tomtom.service.mentorapply.service.dto.Mentee;
 import com.tomtom.service.mentorapply.service.api.MenteeService;
+import com.tomtom.service.mentorapply.service.dto.Mentee;
+import com.tomtom.service.mentorapply.service.dto.MenteeInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,7 +46,7 @@ public class MenteeController {
     }
 
     @PostMapping
-    public ResponseEntity<Mentee> addOrUpdate(@RequestBody Mentee mentee) {
+    public ResponseEntity<Mentee> addOrUpdate(@RequestBody MenteeInput mentee) {
         return menteeService.addOrUpdate(mentee);
     }
 

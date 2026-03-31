@@ -2,6 +2,7 @@ package com.tomtom.service.mentorapply.controller;
 
 import com.tomtom.service.mentorapply.service.dto.Mentor;
 import com.tomtom.service.mentorapply.service.api.MentorService;
+import com.tomtom.service.mentorapply.service.dto.MentorInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,7 +46,7 @@ public class MentorController {
     }
 
     @PostMapping
-    public ResponseEntity<Mentor> addOrUpdate(@RequestBody Mentor mentor) {
+    public ResponseEntity<Mentor> addOrUpdate(@RequestBody MentorInput mentor) {
         return mentorService.addOrUpdate(mentor);
     }
 

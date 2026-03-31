@@ -36,7 +36,7 @@ public class PendingApplicationEntity {
     public MenteeEntity mentee;
 
     @Column(name = "apply_date", nullable = false)
-    public LocalDate applyDate;
+    public LocalDate applyDate = LocalDate.now();
 
     @ElementCollection
     @CollectionTable(
@@ -48,8 +48,16 @@ public class PendingApplicationEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false)
-    public PendingApplicationState state;
+    public PendingApplicationState state = PendingApplicationState.WAITING_APPROVAL;
 
+    public PendingApplicationEntity(MentorEntity mentor, MenteeEntity mentee) {
+        this.mentor = mentor;
+        this.mentee = mentee;
+    }
+
+    // Required by Hibernate
     public PendingApplicationEntity() {
+        this.mentor = null;
+        this.mentee = null;
     }
 }

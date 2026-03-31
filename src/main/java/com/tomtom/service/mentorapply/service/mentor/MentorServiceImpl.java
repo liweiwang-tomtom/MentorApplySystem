@@ -4,9 +4,9 @@ import com.tomtom.service.mentorapply.mapper.Mapper;
 import com.tomtom.service.mentorapply.repository.MentorRepository;
 import com.tomtom.service.mentorapply.service.api.MentorService;
 import com.tomtom.service.mentorapply.service.dto.Mentor;
+import com.tomtom.service.mentorapply.service.dto.MentorInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class MentorServiceImpl implements MentorService {
     private final MentorRepository mentorRepository;
 
     @Autowired
-    public MentorServiceImpl(@NonNull MentorRepository mentorRepository) {
+    public MentorServiceImpl(MentorRepository mentorRepository) {
         this.mentorRepository = mentorRepository;
     }
 
@@ -65,7 +65,10 @@ public class MentorServiceImpl implements MentorService {
     }
 
     @Override
-    public ResponseEntity<Mentor> addOrUpdate(Mentor mentor) {
+    public ResponseEntity<Mentor> addOrUpdate(MentorInput mentor) {
+        if (mentor.name() == null) {
+            return ResponseEntity.badRequest().build();
+        }
         if (mentor.id() == null) {
             var saved = mentorRepository.save(Mapper.toEntityForCreate(mentor));
             return ResponseEntity.ok(Mapper.fromEntity(saved));

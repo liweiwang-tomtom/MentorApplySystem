@@ -3,6 +3,7 @@ package com.tomtom.service.mentorapply;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tomtom.service.mentorapply.service.dto.Mentee;
 import com.tomtom.service.mentorapply.service.dto.Mentor;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,12 +32,13 @@ public abstract class BasePairingControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    protected Mentor mentor1 = null;
-    protected Mentor mentor2 = null;
-    protected Mentor mentor3 = null;
-    protected Mentee mentee1 = null;
-    protected Mentee mentee2 = null;
-    protected Mentee mentee3 = null;
+    protected @MonotonicNonNull Mentor mentor1;
+    protected @MonotonicNonNull Mentor mentor2;
+    protected @MonotonicNonNull Mentor mentor3;
+
+    protected @MonotonicNonNull Mentee mentee1;
+    protected @MonotonicNonNull Mentee mentee2;
+    protected @MonotonicNonNull Mentee mentee3;
 
     @BeforeEach
     void setup() throws Exception {

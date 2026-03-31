@@ -24,7 +24,7 @@ public class MenteeEntity {
     public Long id;
 
     @Column(name = "name", nullable = false)
-    public String name;
+    public String name = "";
 
     @Nullable
     @Column(name = "job_title")
@@ -37,7 +37,7 @@ public class MenteeEntity {
     @Nullable
     @OneToOne(mappedBy = "mentee")
     @JsonIgnore
-    public PairingEntity pairing; // @OneToOne(mappedBy = "mentee", optional = true)
+    public PairingEntity pairing;
 
     @OneToMany(mappedBy = "mentee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

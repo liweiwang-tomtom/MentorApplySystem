@@ -1,6 +1,7 @@
 package com.tomtom.service.mentorapply.service.api;
 
 import com.tomtom.service.mentorapply.service.dto.Mentor;
+import com.tomtom.service.mentorapply.service.dto.MentorInput;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface MentorService {
 
     ResponseEntity<Void> deleteById(long id);
 
-    ResponseEntity<Mentor> addOrUpdate(Mentor mentor);
+    ResponseEntity<Mentor> addOrUpdate(MentorInput mentor);
 }

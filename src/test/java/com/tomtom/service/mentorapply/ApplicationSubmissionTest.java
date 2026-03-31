@@ -3,8 +3,6 @@ package com.tomtom.service.mentorapply;
 import com.tomtom.service.mentorapply.service.dto.PendingApplicationState;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
-
 import static com.tomtom.service.mentorapply.utils.ResultMapper.parseApplication;
 import static com.tomtom.service.mentorapply.utils.ResultMapper.parseApplicationList;
 import static com.tomtom.service.mentorapply.utils.ResultMapper.parseMentor;
@@ -39,7 +37,7 @@ public class ApplicationSubmissionTest extends BasePairingControllerTest {
         assertEquals(PendingApplicationState.WAITING_APPROVAL, pendingApplication.state());
 
         var findApplicationByMenteeIdResult = mockMvc.perform(
-                get("/api/v1/pairings/applications/mentee/" + mentee1.id().toString())
+                get("/api/v1/pairings/applications/mentee/" + mentee1.id())
             )
             .andExpect(status().isOk())
             .andReturn();
@@ -47,7 +45,7 @@ public class ApplicationSubmissionTest extends BasePairingControllerTest {
         assertEquals(2, allApplications.size());
 
         var findApplicationByMentorIdResult = mockMvc.perform(
-                get("/api/v1/pairings/applications/mentor/" + mentor2.id().toString())
+                get("/api/v1/pairings/applications/mentor/" + mentor2.id())
             )
             .andExpect(status().isOk())
             .andReturn();

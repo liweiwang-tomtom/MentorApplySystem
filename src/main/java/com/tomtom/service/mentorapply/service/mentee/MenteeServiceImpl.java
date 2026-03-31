@@ -4,9 +4,9 @@ import com.tomtom.service.mentorapply.mapper.Mapper;
 import com.tomtom.service.mentorapply.repository.MenteeRepository;
 import com.tomtom.service.mentorapply.service.api.MenteeService;
 import com.tomtom.service.mentorapply.service.dto.Mentee;
+import com.tomtom.service.mentorapply.service.dto.MenteeInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class MenteeServiceImpl implements MenteeService {
     private final MenteeRepository menteeRepository;
 
     @Autowired
-    public MenteeServiceImpl(@NonNull MenteeRepository menteeRepository) {
+    public MenteeServiceImpl(MenteeRepository menteeRepository) {
         this.menteeRepository = menteeRepository;
     }
 
@@ -65,7 +65,10 @@ public class MenteeServiceImpl implements MenteeService {
     }
 
     @Override
-    public ResponseEntity<Mentee> addOrUpdate(Mentee mentee) {
+    public ResponseEntity<Mentee> addOrUpdate(MenteeInput mentee) {
+        if (mentee.name() == null) {
+            return ResponseEntity.badRequest().build();
+        }
         if (mentee.id() == null) {
             var saved = menteeRepository.save(Mapper.toEntityForCreate(mentee));
             return ResponseEntity.ok(Mapper.fromEntity(saved));

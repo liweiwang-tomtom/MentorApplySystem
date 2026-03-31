@@ -1,6 +1,7 @@
 package com.tomtom.service.mentorapply.service.api;
 
 import com.tomtom.service.mentorapply.service.dto.Mentee;
+import com.tomtom.service.mentorapply.service.dto.MenteeInput;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface MenteeService {
 
     ResponseEntity<Void> deleteById(long id);
 
-    ResponseEntity<Mentee> addOrUpdate(Mentee mentee);
+    ResponseEntity<Mentee> addOrUpdate(MenteeInput mentee);
 }

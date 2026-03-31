@@ -5,7 +5,9 @@ import com.tomtom.service.mentorapply.repository.entity.MentorEntity;
 import com.tomtom.service.mentorapply.repository.entity.PairingEntity;
 import com.tomtom.service.mentorapply.repository.entity.PendingApplicationEntity;
 import com.tomtom.service.mentorapply.service.dto.Mentee;
+import com.tomtom.service.mentorapply.service.dto.MenteeInput;
 import com.tomtom.service.mentorapply.service.dto.Mentor;
+import com.tomtom.service.mentorapply.service.dto.MentorInput;
 import com.tomtom.service.mentorapply.service.dto.Pairing;
 import com.tomtom.service.mentorapply.service.dto.PendingApplication;
 
@@ -25,22 +27,23 @@ public class Mapper {
         );
     }
 
-    public static MentorEntity toEntityForCreate(Mentor dto) {
+    public static MentorEntity toEntityForCreate(MentorInput dto) {
         var e = new MentorEntity();
-        e.id = dto.id();
+        assert dto.name() != null;
         e.name = dto.name();
         e.jobTitle = dto.jobTitle();
         e.location = dto.location();
-        e.skills = new ArrayList<>(dto.skills());
+        e.skills = dto.skills() != null ? new ArrayList<>(dto.skills()) : new ArrayList<>();
         e.available = dto.available();
         return e;
     }
 
-    public static MentorEntity updateEntity(MentorEntity e, Mentor dto) {
+    public static MentorEntity updateEntity(MentorEntity e, MentorInput dto) {
+        assert dto.name() != null;
         e.name = dto.name();
         e.jobTitle = dto.jobTitle();
         e.location = dto.location();
-        e.skills = new ArrayList<>(dto.skills());
+        e.skills = dto.skills() != null ? new ArrayList<>(dto.skills()) : new ArrayList<>();
         e.available = dto.available();
         return e;
     }
@@ -60,16 +63,17 @@ public class Mapper {
         );
     }
 
-    public static MenteeEntity toEntityForCreate(Mentee dto) {
+    public static MenteeEntity toEntityForCreate(MenteeInput dto) {
         var e = new MenteeEntity();
-        e.id = dto.id();
+        assert dto.name() != null;
         e.name = dto.name();
         e.jobTitle = dto.jobTitle();
         e.location = dto.location();
         return e;
     }
 
-    public static MenteeEntity updateEntity(MenteeEntity e, Mentee dto) {
+    public static MenteeEntity updateEntity(MenteeEntity e, MenteeInput dto) {
+        assert dto.name() != null;
         e.name = dto.name();
         e.jobTitle = dto.jobTitle();
         e.location = dto.location();
@@ -92,18 +96,6 @@ public class Mapper {
         );
     }
 
-    public static PairingEntity toEntity(Pairing dto, MentorEntity mentor, MenteeEntity mentee) {
-        var e = new PairingEntity();
-        e.id = dto.id();
-        e.mentor = mentor;
-        e.mentee = mentee;
-        e.applyDate = dto.applyDate();
-        e.startDate = dto.startDate();
-        e.endDate = dto.endDate();
-        e.skillsToEnhance = new ArrayList<>(dto.skillsToEnhance());
-        return e;
-    }
-
     // ==========================
     // PendingApplication
     // ==========================
@@ -117,20 +109,5 @@ public class Mapper {
             new ArrayList<>(e.skillsToEnhance),
             e.state
         );
-    }
-
-    public static PendingApplicationEntity toEntity(
-        PendingApplication dto,
-        MentorEntity mentor,
-        MenteeEntity mentee
-    ) {
-        var e = new PendingApplicationEntity();
-        e.id = dto.id();
-        e.mentor = mentor;
-        e.mentee = mentee;
-        e.applyDate = dto.applyDate();
-        e.skillsToEnhance = new ArrayList<>(dto.skillsToEnhance());
-        e.state = dto.state();
-        return e;
     }
 }

@@ -62,7 +62,7 @@ public class ApplicationApprovalTest extends BasePairingControllerTest {
         assertEquals(mentee1.id(), pairing.menteeId());
         // Assert mentor1's other applications are declined.
         var findApplicationByMentorIdResult = mockMvc.perform(
-                get("/api/v1/pairings/applications/mentor/" + mentor1.id().toString())
+                get("/api/v1/pairings/applications/mentor/" + mentor1.id())
             )
             .andExpect(status().isOk())
             .andReturn();
@@ -79,7 +79,7 @@ public class ApplicationApprovalTest extends BasePairingControllerTest {
         });
         // Assert mentee1's other applications are declined.'
         var findApplicationByMenteeIdResult = mockMvc.perform(
-                get("/api/v1/pairings/applications/mentee/" + mentee1.id().toString())
+                get("/api/v1/pairings/applications/mentee/" + mentee1.id())
             )
             .andExpect(status().isOk())
             .andReturn();
@@ -110,7 +110,7 @@ public class ApplicationApprovalTest extends BasePairingControllerTest {
         assertEquals(mentee1.id(), pairing.menteeId());
         // Assert mentor1's applications are updated as well.
         var findApplicationByMentorIdResult = mockMvc.perform(
-                get("/api/v1/pairings/applications/mentor/" + mentor1.id().toString())
+                get("/api/v1/pairings/applications/mentor/" + mentor1.id())
             )
             .andExpect(status().isOk())
             .andReturn();

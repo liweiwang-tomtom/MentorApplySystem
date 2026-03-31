@@ -32,19 +32,27 @@ public class PairingEntity {
     public MenteeEntity mentee;
 
     @Column(name = "apply_date")
-    public LocalDate applyDate;
+    public LocalDate applyDate = LocalDate.now();
 
     @Column(name = "start_date")
-    public LocalDate startDate;
+    public LocalDate startDate = LocalDate.now();
 
     @Column(name = "end_date")
-    public LocalDate endDate;
+    public LocalDate endDate = LocalDate.now().plusMonths(6);
 
     @ElementCollection
     @CollectionTable(name = "PAIRING_SKILLS", joinColumns = @JoinColumn(name = "pairing_id"))
     @Column(name = "skill_to_enhance", nullable = false)
     public List<String> skillsToEnhance = new ArrayList<>();
 
+    public PairingEntity(MentorEntity mentor, MenteeEntity mentee) {
+        this.mentor = mentor;
+        this.mentee = mentee;
+    }
+
+    // Required by Hibernate
     public PairingEntity() {
+        this.mentor = null;
+        this.mentee = null;
     }
 }

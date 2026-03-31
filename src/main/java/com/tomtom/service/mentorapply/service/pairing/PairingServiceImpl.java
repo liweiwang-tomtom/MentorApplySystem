@@ -11,6 +11,7 @@ import com.tomtom.service.mentorapply.service.api.PairingService;
 import com.tomtom.service.mentorapply.service.dto.Pairing;
 import com.tomtom.service.mentorapply.service.dto.PendingApplication;
 import com.tomtom.service.mentorapply.service.dto.PendingApplicationState;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@Slf4j
 public class PairingServiceImpl implements PairingService {
     private final PairingRepository pairingRepository;
     private final PendingApplicationRepository pendingApplicationRepository;
@@ -123,9 +125,7 @@ public class PairingServiceImpl implements PairingService {
         if (mentee == null) {
             return ResponseEntity.notFound().build();
         }
-        var entity = new PendingApplicationEntity();
-        entity.mentor = mentor;
-        entity.mentee = mentee;
+        var entity = new PendingApplicationEntity(mentor, mentee);
         entity.applyDate = LocalDate.now();
         entity.state = PendingApplicationState.WAITING_APPROVAL;
         var application = Mapper.fromEntity(pendingApplicationRepository.save(entity));
@@ -173,9 +173,8 @@ public class PairingServiceImpl implements PairingService {
             return ResponseEntity.internalServerError().build();
         }
         // Save a new pairing.
-        var pairingEntity = new PairingEntity();
-        pairingEntity.mentor = approvedApplication.mentor;
-        pairingEntity.mentee = approvedApplication.mentee;
+        log.debug("Create a new pairing form application {}", approvedApplication.id);
+        var pairingEntity = new PairingEntity(approvedApplication.mentor, approvedApplication.mentee);
         pairingEntity.applyDate = approvedApplication.applyDate;
         pairingEntity.startDate = LocalDate.now();
         pairingEntity.endDate = LocalDate.now().plusMonths(6);
@@ -208,6 +207,6 @@ public class PairingServiceImpl implements PairingService {
     public ResponseEntity<Void> deleteOutdatedPairingAndApplications() {
         pairingRepository.deleteOutdatedPairing(LocalDate.now());
         pendingApplicationRepository.deleteOutdatedApplication(LocalDate.now().minusMonths(6));
-        return null;
+        return ResponseEntity.noContent().build();
     }
 }
